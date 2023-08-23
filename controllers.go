@@ -78,6 +78,10 @@ func determineAcceptMimeType(accept string) string {
 			return "png"
 		case "image/jpeg":
 			return "jpeg"
+		case "image/bmp":
+			return "bmp"
+		case "image/avif":
+			return "avif"
 		}
 	}
 
@@ -87,6 +91,7 @@ func determineAcceptMimeType(accept string) string {
 func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation Operation, o ServerOptions) {
 	// Infer the body MIME type via mime sniff algorithm
 	mimeType := http.DetectContentType(buf)
+	debug("Detected MIME: %s", mimeType)
 
 	// If cannot infer the type, infer it via magic numbers
 	if mimeType == "application/octet-stream" {
@@ -105,6 +110,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 
 	// Finally check if image MIME type is supported
 	if !IsImageMimeTypeSupported(mimeType) {
+		debug("Not a supported image type %s", mimeType)
 		ErrorReply(r, w, ErrUnsupportedMedia, o)
 
 		return

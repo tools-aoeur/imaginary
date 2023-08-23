@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Get the directory of the script
+SCRIPT_DIR="$(dirname "$0")"
+
+# Run the Ruby script with modified arguments
+ARGS=""
+for arg in "$@"; do
+  if echo "$arg" | grep -qE '^-[A-Za-z]+'; then
+    ARGS="$ARGS --${arg#-}"
+  else
+    ARGS="$ARGS \"$arg\""
+  fi
+done
+
+eval "/usr/bin/env ruby \"$SCRIPT_DIR/convert.rb\" $ARGS"
