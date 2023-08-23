@@ -4,13 +4,13 @@
 SCRIPT_DIR="$(dirname "$0")"
 
 # Run the Ruby script with modified arguments
-ARGS=()
+ARGS=""
 for arg in "$@"; do
   if echo "$arg" | grep -qE '^-[A-Za-z]+'; then
-    ARGS+=("--${arg#-}")
+    ARGS="$ARGS --${arg#-}"
   else
-    ARGS+=("$arg")
+    ARGS="$ARGS \"$arg\""
   fi
 done
 
-/usr/bin/env ruby "$SCRIPT_DIR/convert.rb" "${ARGS[@]}"
+eval "/usr/bin/env ruby \"$SCRIPT_DIR/convert.rb\" $ARGS"
