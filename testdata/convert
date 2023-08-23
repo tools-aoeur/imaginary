@@ -16,7 +16,7 @@ if ARGV.include? '-version'
 end
 
 require 'rest-client'
-require 'rails'
+require 'active_support/all'
 
 # wraps access to the imaginary image processing microservice
 class ImageProcessor
@@ -28,7 +28,7 @@ class ImageProcessor
     raise 'Need thumbnail service secret' if service_secret.blank?
 
     file = File.new(source, 'rb')
-    url = "#{base_url}/fit?width=#{width}&height=#{height}"
+    url = "#{base_url}/fit?width=#{width}&height=#{height}&type=png"
     raw_response = RestClient::Request.execute(
       method: :post,
       url: url,
@@ -49,6 +49,7 @@ end
   "bmp_24.bmp",
   "sample.pdf",
   "occult.gif",
+  "static_gif.gif",
   "imaginary.jpg",
   "large.jpg",
   "medium.jpg",
@@ -62,8 +63,8 @@ end
   targetpath_im = "result_#{filepath.gsub(/\..*$/, '_im.png')}"
   puts "convert \"#{filepath}\" -thumbnail 160x160 \"#{targetpath_im}\""
   ImageProcessor.thumbnail(filepath, 160, 160, targetpath)
-rescue
-  puts "Error on #{filepath}"
+rescue => e
+  puts "Error on #{filepath}: #{e.message}"
 end
 
 # TODO:

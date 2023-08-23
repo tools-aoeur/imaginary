@@ -33,6 +33,7 @@ func IsImageMimeTypeSupported(mime string) bool {
 
 // ImageType returns the image type based on the given image type alias.
 func ImageType(name string) bimg.ImageType {
+	debug("ImageType name: %s", name)
 	switch strings.ToLower(name) {
 	case "avif":
 		return bimg.AVIF
