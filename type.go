@@ -22,9 +22,8 @@ func ExtractImageTypeFromMime(mime string) string {
 // type is supported by bimg.
 func IsImageMimeTypeSupported(mime string) bool {
 	format := ExtractImageTypeFromMime(mime)
-	type := ImageType(format)
 
-	return bimg.IsTypeSupported(typename)
+	return bimg.IsTypeSupported(ImageType(format))
 }
 
 // ImageType returns the image type based on the given image type alias.
