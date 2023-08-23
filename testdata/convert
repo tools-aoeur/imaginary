@@ -4,11 +4,12 @@ ENV['THUMBNAIL_SERVICE_TOKEN'] = 'secret'
 ENV['THUMBNAIL_SERVICE_URL']   = '10.212.0.1:8088'
 
 if ARGV.include? '-version'
+  # fake image magick like info in case some tool expects that kind of answer for parsing
   puts <<~VERSION_INFO
     Version: imaginary 2023-08-23 https://github.com/tools-aoeur/imaginary
-    Copyright: (C) 1999-2023
+    Copyright: (C) 2023
     License: https://github.com/tools-aoeur/imaginary/blob/main/LICENSE
-    Features: autorotate blur convert crop enlarge extract flip flop resize rotate smartcrop thumbnail watermark watermarkimage zoom
+    Features: autorotate blur convert crop enlarge extract fit flip flop resize rotate smartcrop thumbnail watermark watermarkimage zoom
     Delegates (built-in): libvips
   VERSION_INFO
   exit 0
@@ -43,9 +44,6 @@ class ImageProcessor
   end
 end
 
-# redmine
-# ALLOWED_TYPES = %w(image/bmp image/gif image/jpeg image/png application/pdf)
-
 [
   "flyio-button.svg",
   "bmp_24.bmp",
@@ -58,7 +56,9 @@ end
   "test.png",
   "test.webp"
 ].each do |filepath|
+  # imaginary target path
   targetpath = "result_#{filepath.gsub(/\..*$/, '.png')}"
+  # image magick target path (can be generated for comparison)
   targetpath_im = "result_#{filepath.gsub(/\..*$/, '_im.png')}"
   puts "convert \"#{filepath}\" -thumbnail 160x160 \"#{targetpath_im}\""
   ImageProcessor.thumbnail(filepath, 160, 160, targetpath)
@@ -66,31 +66,21 @@ rescue
   puts "Error on #{filepath}"
 end
 
-# def self.generate(source, target, size, is_pdf = false)
-#   return nil unless convert_available?
-#   return nil if is_pdf && !gs_available?
+# TODO:
+# * [ ] bmp support
+# * [ ] gif support
+# * [ ] pdf support
+# * [x] jpeg Ok
+# * [x] png Ok
 
-#   unless File.exist?(target)
-#     # Make sure we only invoke Imagemagick if the file type is allowed
-#     mime_type = File.open(source) {|f| Marcel::MimeType.for(f)}
-#     return nil if !ALLOWED_TYPES.include? mime_type
-#     return nil if is_pdf && mime_type != "application/pdf"
-
-#     directory = File.dirname(target)
-#     unless File.exist?(directory)
-#       FileUtils.mkdir_p directory
-#     end
-#     size_option = "#{size}x#{size}>"
-
-#     if is_pdf
-#       cmd = "#{shell_quote CONVERT_BIN} #{shell_quote "#{source}[0]"} -thumbnail #{shell_quote size_option} #{shell_quote "png:#{target}"}"
-#     else
-#       cmd = "#{shell_quote CONVERT_BIN} #{shell_quote source} -auto-orient -thumbnail #{shell_quote size_option} #{shell_quote target}"
-#     end
-#     unless system(cmd)
-#       logger.error("Creating thumbnail failed (#{$?}):\nCommand: #{cmd}")
-#       return nil
-#     end
-#   end
-#   target
-# end
+# convert arguments as called by redmine
+# redmine
+# ALLOWED_TYPES = %w(image/bmp image/gif image/jpeg image/png application/pdf)
+#
+# size_option = "#{size}x#{size}>"
+#
+# pdf:
+# #{shell_quote "#{source}[0]"} -thumbnail #{shell_quote size_option} #{shell_quote "png:#{target}"
+#
+# others:
+# #{shell_quote source} -auto-orient -thumbnail #{shell_quote size_option} #{shell_quote target}
