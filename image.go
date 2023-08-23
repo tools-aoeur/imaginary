@@ -429,6 +429,7 @@ func Pipeline(buf []byte, o ImageOptions) (Image, error) {
 func Process(buf []byte, opts bimg.Options) (out Image, err error) {
 	defer func() {
 		if r := recover(); r != nil {
+			debug("Deferred error to recover in image.Process %s", err)
 			switch value := r.(type) {
 			case error:
 				err = value
@@ -441,6 +442,7 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
 		}
 	}()
 
+	debug("opts in image.Process %+v\n", opts)
 	// Resize image via bimg
 	ibuf, err := bimg.Resize(buf, opts)
 
@@ -452,6 +454,8 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
 	}
 
 	if err != nil {
+		debug("ERROR in image.Process %s", err)
+
 		return Image{}, err
 	}
 

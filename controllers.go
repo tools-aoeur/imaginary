@@ -110,6 +110,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request, buf []byte, operation 
 
 	// Finally check if image MIME type is supported
 	if !IsImageMimeTypeSupported(mimeType) {
+		debug("Not a supported image type %s", mimeType)
 		ErrorReply(r, w, ErrUnsupportedMedia, o)
 
 		return
