@@ -1,87 +1,16 @@
-#!/usr/bin/env ruby
+#!/bin/sh
 
-ENV['THUMBNAIL_SERVICE_TOKEN'] = 'secret'
-ENV['THUMBNAIL_SERVICE_URL']   = '10.212.0.1:8088'
+# Get the directory of the script
+SCRIPT_DIR="$(dirname "$0")"
 
-if ARGV.include? '-version'
-  # fake image magick like info in case some tool expects that kind of answer for parsing
-  puts <<~VERSION_INFO
-    Version: imaginary 2023-08-23 https://github.com/tools-aoeur/imaginary
-    Copyright: (C) 2023
-    License: https://github.com/tools-aoeur/imaginary/blob/main/LICENSE
-    Features: autorotate blur convert crop enlarge extract fit flip flop resize rotate smartcrop thumbnail watermark watermarkimage zoom
-    Delegates (built-in): libvips
-  VERSION_INFO
-  exit 0
-end
+# Run the Ruby script with modified arguments
+ARGS=()
+for arg in "$@"; do
+  if echo "$arg" | grep -qE '^-[A-Za-z]+'; then
+    ARGS+=("--${arg#-}")
+  else
+    ARGS+=("$arg")
+  fi
+done
 
-require 'rest-client'
-require 'active_support/all'
-
-# wraps access to the imaginary image processing microservice
-class ImageProcessor
-  def self.thumbnail(source, width, height, target)
-    base_url = ENV.fetch('THUMBNAIL_SERVICE_URL', nil)
-    raise 'Need URL to thumbnail service' if base_url.blank?
-
-    service_secret = ENV.fetch('THUMBNAIL_SERVICE_TOKEN', nil)
-    raise 'Need thumbnail service secret' if service_secret.blank?
-
-    file = File.new(source, 'rb')
-    url = "#{base_url}/fit?width=#{width}&height=#{height}&type=png"
-    raw_response = RestClient::Request.execute(
-      method: :post,
-      url: url,
-      headers: { 'API-Key' => service_secret },
-      payload: { file: file },
-      raw_response: true
-    )
-    File.open(raw_response.file, 'rb') do |input_stream|
-      File.open(target, 'wb') do |output_stream|
-        IO.copy_stream(input_stream, output_stream)
-      end
-    end
-  end
-end
-
-[
-  "flyio-button.svg",
-  "bmp_24.bmp",
-  "sample.pdf",
-  "occult.gif",
-  "static_gif.gif",
-  "imaginary.jpg",
-  "large.jpg",
-  "medium.jpg",
-  "smart-crop.jpg",
-  "test.png",
-  "test.webp"
-].each do |filepath|
-  # imaginary target path
-  targetpath = "result_#{filepath.gsub(/\..*$/, '.png')}"
-  # image magick target path (can be generated for comparison)
-  targetpath_im = "result_#{filepath.gsub(/\..*$/, '_im.png')}"
-  puts "convert \"#{filepath}\" -thumbnail 160x160 \"#{targetpath_im}\""
-  ImageProcessor.thumbnail(filepath, 160, 160, targetpath)
-rescue => e
-  puts "Error on #{filepath}: #{e.message}"
-end
-
-# TODO:
-# * [ ] bmp support
-# * [ ] gif support
-# * [ ] pdf support
-# * [x] jpeg Ok
-# * [x] png Ok
-
-# convert arguments as called by redmine
-# redmine
-# ALLOWED_TYPES = %w(image/bmp image/gif image/jpeg image/png application/pdf)
-#
-# size_option = "#{size}x#{size}>"
-#
-# pdf:
-# #{shell_quote "#{source}[0]"} -thumbnail #{shell_quote size_option} #{shell_quote "png:#{target}"
-#
-# others:
-# #{shell_quote source} -auto-orient -thumbnail #{shell_quote size_option} #{shell_quote target}
+/usr/bin/env ruby "$SCRIPT_DIR/convert.rb" "${ARGS[@]}"
