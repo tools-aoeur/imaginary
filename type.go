@@ -22,13 +22,7 @@ func ExtractImageTypeFromMime(mime string) string {
 // type is supported by bimg.
 func IsImageMimeTypeSupported(mime string) bool {
 	format := ExtractImageTypeFromMime(mime)
-
-	// Some payloads may expose the MIME type for SVG as text/xml
-	if format == "xml" {
-		format = "svg"
-	}
-
-	return bimg.IsTypeNameSupported(format)
+	return bimg.IsTypeNameSupported(ImageType(format))
 }
 
 // ImageType returns the image type based on the given image type alias.
@@ -53,6 +47,8 @@ func ImageType(name string) bimg.ImageType {
 		return bimg.SVG
 	case "webp":
 		return bimg.WEBP
+	case "xml": // Some payloads may expose the MIME type for SVG as text/xml
+		return bimg.SVG
 	default:
 		return bimg.UNKNOWN
 	}
