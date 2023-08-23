@@ -60,6 +60,8 @@ func ImageType(name string) bimg.ImageType {
 // GetImageMimeType returns the MIME type based on the given image type code.
 func GetImageMimeType(code bimg.ImageType) string {
 	switch code {
+	case bimg.MAGICK:
+		return "image/bmp"
 	case bimg.PNG:
 		return "image/png"
 	case bimg.WEBP:
