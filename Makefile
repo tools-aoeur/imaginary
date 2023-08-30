@@ -17,7 +17,7 @@ benchmark: build
 
 docker-build:
 	@echo "$(OK_COLOR)==> Building Docker image$(NO_COLOR)"
-	docker build --build-arg IMAGINARY_VERSION=$(VERSION) -t pmo-tooling/imaginary:$(VERSION) .
+	docker build --build-arg IMAGINARY_VERSION=$(VERSION) -t connect/imaginary:$(VERSION) .
 
 # docker-push:
 #	@echo "$(OK_COLOR)==> Pushing Docker image v$(VERSION) $(NO_COLOR)"
