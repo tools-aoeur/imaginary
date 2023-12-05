@@ -18,7 +18,7 @@ suite() {
   echo "POST http://localhost:$port/$2" | vegeta attack \
     -duration=30s \
     -rate=50 \
-    -body="./testdata/large.jpg" \ | vegeta report
+    -body="./testdata/large image.jpg" \ | vegeta report
   sleep 1
 }
 

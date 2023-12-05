@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -47,7 +47,7 @@ func readFormBody(r *http.Request) ([]byte, error) {
 	}
 	defer file.Close()
 
-	buf, err := ioutil.ReadAll(file)
+	buf, err := io.ReadAll(file)
 	if len(buf) == 0 {
 		err = ErrEmptyBody
 	}
@@ -56,7 +56,7 @@ func readFormBody(r *http.Request) ([]byte, error) {
 }
 
 func readRawBody(r *http.Request) ([]byte, error) {
-	return ioutil.ReadAll(r.Body)
+	return io.ReadAll(r.Body)
 }
 
 func init() {

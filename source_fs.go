@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
 	"strings"
 )
@@ -24,6 +24,7 @@ func (s *FileSystemImageSource) Matches(r *http.Request) bool {
 	if err != nil {
 		return false
 	}
+
 	return r.Method == http.MethodGet && file != ""
 }
 
@@ -55,7 +56,7 @@ func (s *FileSystemImageSource) buildPath(file string) (string, error) {
 }
 
 func (s *FileSystemImageSource) read(file string) ([]byte, error) {
-	buf, err := ioutil.ReadFile(file)
+	buf, err := os.ReadFile(file)
 	if err != nil {
 		return nil, ErrInvalidFilePath
 	}
@@ -65,7 +66,7 @@ func (s *FileSystemImageSource) read(file string) ([]byte, error) {
 
 func (s *FileSystemImageSource) getFileParam(r *http.Request) (string, error) {
 	unescaped, err := url.QueryUnescape(r.URL.Query().Get("file"))
-	if err != nil{
+	if err != nil {
 		return "", fmt.Errorf("failed to unescape file param: %w", err)
 	}
 

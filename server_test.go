@@ -41,7 +41,7 @@ func TestIndex(t *testing.T) {
 
 func TestCrop(t *testing.T) {
 	ts := testServer(controller(Crop))
-	buf := readFile("large.jpg")
+	buf := readFile("large image.jpg")
 	url := ts.URL + "?width=300"
 	defer ts.Close()
 
@@ -78,7 +78,7 @@ func TestCrop(t *testing.T) {
 
 func TestResize(t *testing.T) {
 	ts := testServer(controller(Resize))
-	buf := readFile("large.jpg")
+	buf := readFile("large image.jpg")
 	url := ts.URL + "?width=300&nocrop=false"
 	defer ts.Close()
 
@@ -111,7 +111,7 @@ func TestResize(t *testing.T) {
 
 func TestEnlarge(t *testing.T) {
 	ts := testServer(controller(Enlarge))
-	buf := readFile("large.jpg")
+	buf := readFile("large image.jpg")
 	url := ts.URL + "?width=300&height=200"
 	defer ts.Close()
 
@@ -144,7 +144,7 @@ func TestEnlarge(t *testing.T) {
 
 func TestExtract(t *testing.T) {
 	ts := testServer(controller(Extract))
-	buf := readFile("large.jpg")
+	buf := readFile("large image.jpg")
 	url := ts.URL + "?top=100&left=100&areawidth=200&areaheight=120"
 	defer ts.Close()
 
@@ -189,7 +189,7 @@ func TestTypeAuto(t *testing.T) {
 
 	for _, test := range cases {
 		ts := testServer(controller(Crop))
-		buf := readFile("large.jpg")
+		buf := readFile("large image.jpg")
 		url := ts.URL + "?width=300&type=auto"
 		defer ts.Close()
 
@@ -235,7 +235,7 @@ func TestTypeAuto(t *testing.T) {
 func TestFit(t *testing.T) {
 	var err error
 
-	buf := readFile("large.jpg")
+	buf := readFile("large image.jpg")
 	original, _ := ioutil.ReadAll(buf)
 	err = assertSize(original, 1920, 1080)
 	if err != nil {
@@ -280,7 +280,7 @@ func TestRemoteHTTPSource(t *testing.T) {
 	LoadSources(opts)
 
 	tsImage := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		buf, _ := ioutil.ReadFile("testdata/large.jpg")
+		buf, _ := ioutil.ReadFile("testdata/large image.jpg")
 		_, _ = w.Write(buf)
 	}))
 	defer tsImage.Close()
@@ -344,7 +344,7 @@ func TestMountDirectory(t *testing.T) {
 	LoadSources(opts)
 
 	ts := httptest.NewServer(fn)
-	url := ts.URL + "?width=200&height=200&file=large.jpg"
+	url := ts.URL + "?width=200&height=200&file=large%20image.jpg"
 	defer ts.Close()
 
 	res, err := http.Get(url)
@@ -376,7 +376,7 @@ func TestMountDirectory(t *testing.T) {
 func TestMountInvalidDirectory(t *testing.T) {
 	fn := ImageMiddleware(ServerOptions{Mount: "_invalid_", MaxAllowedPixels: 18.0})(Crop)
 	ts := httptest.NewServer(fn)
-	url := ts.URL + "?top=100&left=100&areawidth=200&areaheight=120&file=large.jpg"
+	url := ts.URL + "?top=100&left=100&areawidth=200&areaheight=120&file=large%20image.jpg"
 	defer ts.Close()
 
 	res, err := http.Get(url)
@@ -392,7 +392,7 @@ func TestMountInvalidDirectory(t *testing.T) {
 func TestMountInvalidPath(t *testing.T) {
 	fn := ImageMiddleware(ServerOptions{Mount: "_invalid_"})(Crop)
 	ts := httptest.NewServer(fn)
-	url := ts.URL + "?top=100&left=100&areawidth=200&areaheight=120&file=../../large.jpg"
+	url := ts.URL + "?top=100&left=100&areawidth=200&areaheight=120&file=../../large%20image.jpg"
 	defer ts.Close()
 
 	res, err := http.Get(url)

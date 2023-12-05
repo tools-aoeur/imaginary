@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-const fixtureFile = "testdata/large.jpg"
+const fixtureFile = "testdata/large image.jpg"
 
 func TestSourceBodyMatch(t *testing.T) {
 	u, _ := url.Parse("http://foo")

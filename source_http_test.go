@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-const fixtureImage = "testdata/large.jpg"
+const fixtureImage = "testdata/large image.jpg"
 const fixture1024Bytes = "testdata/1024bytes"
 
 func TestHttpImageSource(t *testing.T) {
