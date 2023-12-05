@@ -2,7 +2,7 @@ ARG VARIANT="1.20-bullseye"
 FROM mcr.microsoft.com/devcontainers/go:0-${VARIANT}
 
 # Versions of libvips
-ARG LIBVIPS_VERSION=8.14.2
+ARG LIBVIPS_VERSION=8.15.0
 
 # Install additional OS packages
 RUN DEBIAN_FRONTEND=noninteractive \
