@@ -237,7 +237,7 @@ MALLOC_ARENA_MAX=2 imaginary -p 9000 -enable-url-source
 
 ### Graceful shutdown
 
-When you use a cluster, it is necessary to control how the deployment is executed, and it is very useful to finish the containers in a controlled.
+When you use a cluster, it is necessary to control how the deployment is executed, and it is very useful to finish the containers in a controlled manner.
 
 You can use the next command:
 
@@ -1093,7 +1093,7 @@ Self-documented JSON operation schema:
 - **zoom** - Same as [`/zoom`](#get--post-zoom) endpoint.
 - **convert** - Same as [`/convert`](#get--post-convert) endpoint.
 - **watermark** - Same as [`/watermark`](#get--post-watermark) endpoint.
-- **watermarkimage** - Same as [`/watermarkimage`](#get--post-watermarkimage) endpoint.
+- **watermarkImage** - Same as [`/watermarkimage`](#get--post-watermarkimage) endpoint.
 - **blur** - Same as [`/blur`](#get--post-blur) endpoint.
 
 ###### Example
